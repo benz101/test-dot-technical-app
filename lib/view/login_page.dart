@@ -69,6 +69,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _validTextEmail.value = true;
+    _validTextPassword.value = true;
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _isLoading.dispose();

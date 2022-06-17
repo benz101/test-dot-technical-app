@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:test_dot_technical_app/helper/helper.dart';
+import 'package:test_dot_technical_app/helper/url_helper.dart';
 import 'package:test_dot_technical_app/model/gallery.dart';
 import 'package:test_dot_technical_app/model/place.dart';
 import 'package:test_dot_technical_app/model/user.dart';
@@ -9,7 +9,7 @@ import 'package:test_dot_technical_app/model/user.dart';
 class APIService {
   Future<Place> getListPlace() async {
     try {
-      final result = await http.get(Uri.parse(Helper.url + '/place.json'));
+      final result = await http.get(Uri.parse(URLHelper.url + '/place.json'));
       if (result.statusCode == 200) {
         // ignore: avoid_print
         print('ok from getListPlace');
@@ -17,7 +17,8 @@ class APIService {
       } else {
          // ignore: avoid_print
         print('bad from getListPlace');
-        return Place.fromJson(jsonDecode(result.body));
+       Place badResponse = Place.fromJson(jsonDecode(result.body));
+        return Place(statusCode: badResponse.statusCode, message: badResponse.message, data: badResponse.data);
       }
     } catch (e) {
        // ignore: avoid_print
@@ -28,7 +29,7 @@ class APIService {
 
   Future<Galery> getListGallery() async {
     try {
-      final result = await http.get(Uri.parse(Helper.url + '/gallery.json'));
+      final result = await http.get(Uri.parse(URLHelper.url + '/gallery.json'));
       if (result.statusCode == 200) {
          // ignore: avoid_print
         print('ok from getListGallery');
@@ -36,7 +37,8 @@ class APIService {
       } else {
         // ignore: avoid_print
         print('bad from getListGallery');
-        return Galery.fromJson(jsonDecode(result.body));
+       Galery badResponse = Galery.fromJson(jsonDecode(result.body));
+        return  Galery(statusCode: badResponse.statusCode, message: badResponse.message, data: badResponse.data);
       }
     } catch (e) {
       // ignore: avoid_print
@@ -47,7 +49,7 @@ class APIService {
 
   Future<User> getUser() async {
     try {
-      final result = await http.get(Uri.parse(Helper.url + '/user.json'));
+      final result = await http.get(Uri.parse(URLHelper.url + '/user.json'));
       if (result.statusCode == 200) {
         // ignore: avoid_print
         print('ok from getListUser');
@@ -55,7 +57,8 @@ class APIService {
       } else {
         // ignore: avoid_print
         print('bad from getListUser');
-        return User.fromJson(jsonDecode(result.body));
+        User badResponse = User.fromJson(jsonDecode(result.body)); 
+        return User(statusCode: badResponse.statusCode, message: badResponse.message, data: badResponse.data);
       }
     } catch (e) {
       // ignore: avoid_print

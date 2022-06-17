@@ -34,6 +34,24 @@ class _GalleryScreenState extends State<GalleryScreen> {
     });
   }
 
+  Future<List<DataGallery>?> _reGetListGalleryProcess(String value) async {
+    _isLoading.value = true;
+    final response = await _apiService.getListGallery();
+    if (response.statusCode == 200 && response.message == 'success') {
+      _isLoading.value = false;
+      _isSuccess.value = true;
+      List<DataGallery>? search = response.data!
+          .where((element) =>
+              element.caption!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+      return search;
+    } else {
+      _isLoading.value = false;
+      _isSuccess.value = false;
+      return [];
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -56,17 +74,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
             child: TextField(
               controller: _searchInputController,
               onChanged: (value) {
-                if (value.isNotEmpty) {
-                  List<DataGallery>? search = _listGallery.value!
-                      .where((element) => element.caption!
-                          .toLowerCase()
-                          .contains(value.toLowerCase()))
-                      .toList();
-                  _listGallery.value = search;
-                } else {
-                  print('empty');
-                  _getListGalleryProcess();
-                }
+                _reGetListGalleryProcess(value).then((values) {
+                  if (values!.isNotEmpty) {
+                    _listGallery.value = values;
+                  }
+                });
               },
               decoration: const InputDecoration(
                   hintText: 'Search...',

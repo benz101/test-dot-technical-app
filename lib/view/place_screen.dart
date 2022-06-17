@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:test_dot_technical_app/model/place.dart';
@@ -17,7 +19,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
   final ValueNotifier<bool> _isSuccess = ValueNotifier(false);
   final ValueNotifier<List<Content>?> _listPlace = ValueNotifier([]);
   final APIService _apiService = APIService();
-   final FocusNode _textNode = FocusNode();
+  final FocusNode _textNode = FocusNode();
+
+  late String initialText;
 
   void _getListPlaceProcess() {
     _apiService.getListPlace().then((value) {
@@ -35,10 +39,24 @@ class _PlaceScreenState extends State<PlaceScreen> {
     });
   }
 
-  handleKey(RawKeyEventData key) {
-    String _keyCode;
-    _keyCode = key.keyLabel.toString(); //keycode of key event (66 is return)
-    print('key: $_keyCode');
+  Future<List<Content>?> _reGetListPlaceProcess(String value) async {
+    _isLoading.value = true;
+    final response = await _apiService.getListPlace();
+    if (response.statusCode == 200 && response.message == 'success') {
+      _isLoading.value = false;
+      _isSuccess.value = true;
+      List<Content>? search = response.data?.content!
+          .where((element) =>
+              element.title!.toLowerCase().contains(value.toLowerCase()) ||
+              element.content!.toLowerCase().contains(value.toLowerCase()))
+          .toList();
+      // print('search: $search');
+      return search;
+    } else {
+      _isLoading.value = false;
+      _isSuccess.value = false;
+      return [];
+    }
   }
 
   @override
@@ -49,7 +67,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
 
   @override
   Widget build(BuildContext context) {
-     FocusScope.of(context).requestFocus(_textNode);
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -61,35 +78,25 @@ class _PlaceScreenState extends State<PlaceScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: RawKeyboardListener(
-              focusNode: _textNode,
-              onKey:(key) => handleKey(key.data),
-              child: TextField(
-                controller: _searchInputController,
-                onChanged: (value) {
-                  if (value.isNotEmpty) {        
-                    List<Content>? search = _listPlace.value!
-                        .where((element) => element.title!
-                            .toLowerCase()
-                            .contains(value.toLowerCase()))
-                        .toList();
-                    _listPlace.value = search;
-                  } else {
-                    print('empty');
-                    _getListPlaceProcess();
+            child: TextField(
+              controller: _searchInputController,
+              onChanged: (value) {
+                _reGetListPlaceProcess(value).then((values) {
+                  if (values!.isNotEmpty) {
+                    _listPlace.value = values;
                   }
-                },
-                decoration: const InputDecoration(
-                    hintText: 'Search...',
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.black,
-                          style: BorderStyle.solid,
-                          width: 1),
-                    )),
-              ),
+                });
+              },
+              decoration: const InputDecoration(
+                  hintText: 'Search...',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                        width: 1),
+                  )),
             ),
           ),
           const SizedBox(
@@ -156,7 +163,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
   Widget _itemPlace(Content? valueContent) {
     // valueContent.image
     String? _valueImage = valueContent?.image;
-    String _valueMedia = valueContent!.media!.isNotEmpty ?  valueContent.media![0]: '';
+    String _valueMedia =
+        valueContent!.media!.isNotEmpty ? valueContent.media![0] : '';
     return Card(
       child: Container(
         width: double.infinity,
@@ -169,7 +177,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
               width: 80,
               height: 80,
               color: Colors.grey,
-              child: _valueImage == null? Image.network(_valueMedia, fit: BoxFit.fill,): Image.network(_valueImage, fit: BoxFit.fill,),
+              child: _valueImage == null
+                  ? Image.network(
+                      _valueMedia,
+                      fit: BoxFit.fill,
+                    )
+                  : Image.network(
+                      _valueImage,
+                      fit: BoxFit.fill,
+                    ),
             ),
             const SizedBox(
               width: 5,

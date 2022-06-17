@@ -18,22 +18,28 @@ class _UserScreenState extends State<UserScreen> {
   final ValueNotifier<DataUser?> _user = ValueNotifier(null);
   final APIService _apiService = APIService();
 
-  @override
-  void initState() {
-    super.initState();
+  void _getUser() {
     _apiService.getUser().then((value) {
       _isLoading.value = true;
       if (value.statusCode == 200 && value.message == 'success') {
         _isLoading.value = false;
         _isSuccess.value = true;
         _user.value = value.data;
+        // ignore: avoid_print
         print('success');
       } else {
         _isLoading.value = false;
         _isSuccess.value = false;
+        // ignore: avoid_print
         print('error');
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUser();
   }
 
   @override
@@ -42,6 +48,7 @@ class _UserScreenState extends State<UserScreen> {
         width: double.infinity,
         height: double.infinity,
         color: Colors.grey[300],
+        alignment: Alignment.center,
         child: ValueListenableBuilder(
             valueListenable: _isLoading,
             builder: (context, bool valueIsLoading, _) {
@@ -68,7 +75,9 @@ class _UserScreenState extends State<UserScreen> {
                           height: 50,
                           color: Colors.transparent,
                           child: ElevatedButton(
-                              onPressed: () {}, child: const Text('Coba Lagi')),
+                              onPressed: () {
+                                _getUser();
+                              }, child: const Text('Coba Lagi')),
                         );
                       }
                     });
@@ -98,6 +107,7 @@ class _UserScreenState extends State<UserScreen> {
             child: _valueImage == null
                 ? Container()
                 : CircleAvatar(
+                  backgroundColor: Colors.grey[300],
                     backgroundImage: NetworkImage(_valueImage),
                   ),
           ),

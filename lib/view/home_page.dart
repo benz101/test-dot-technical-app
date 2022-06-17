@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title:  Text(_checkTitle(_selectedNavBar)),
           centerTitle: true,
+          automaticallyImplyLeading: false,
         ),
         body: Container(
           width: double.infinity,
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.place),
               label: 'PLACE',
             ),
             BottomNavigationBarItem(
