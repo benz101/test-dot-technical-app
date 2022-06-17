@@ -120,10 +120,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
                                           crossAxisCount: 3,
-                                          mainAxisSpacing:
-                                              3.0, //MENGATUR JARAK ANTARA OBJEK ATAS DAN BAWAH
-                                          crossAxisSpacing:
-                                              3, //MENGATUR JARAK ANTARA OBJEK KIRI DAN KANAN
+                                          mainAxisSpacing: 3.0,
+                                          crossAxisSpacing: 3,
                                           childAspectRatio: 1.0,
                                         ),
                                         padding: const EdgeInsets.symmetric(

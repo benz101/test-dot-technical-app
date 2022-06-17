@@ -123,7 +123,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
               Container(
                 color: Colors.transparent,
-                child: const Text(':'),
+                child: const Text(': '),
               ),
               Flexible(
                 child: Container(
@@ -146,7 +146,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
               Container(
                 color: Colors.transparent,
-                child: const Text(':'),
+                child: const Text(': '),
               ),
               Flexible(
                 child: Container(
@@ -169,7 +169,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
               Container(
                 color: Colors.transparent,
-                child: const Text(':'),
+                child: const Text(': '),
               ),
               Flexible(
                 child: Container(
@@ -192,7 +192,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
               Container(
                 color: Colors.transparent,
-                child: const Text(':'),
+                child: const Text(': '),
               ),
               Flexible(
                 child: Container(
