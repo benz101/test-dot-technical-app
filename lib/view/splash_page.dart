@@ -16,7 +16,7 @@ class _SplashPageState extends State<SplashPage> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 1), (){
-      Navigator.pushNamed(context, LoginPage.routeName);
+      Navigator.popAndPushNamed(context, LoginPage.routeName);
     });
   }
   @override
